@@ -59,12 +59,12 @@ app.use((req,res,next)=>{
   }
   next();
 })
-mongoose.connect(
-  process.env.MONGODB_URI
-).then(() => {
-  console.log("MongoDB connected");
-  console.log("DB:", mongoose.connection.name);
-});
+// mongoose.connect(
+//   process.env.MONGODB_URI
+// ).then(() => {
+//   console.log("MongoDB connected");
+//   console.log("DB:", mongoose.connection.name);
+// });
 
 
 app.get('/',(req,res)=>{
