@@ -67,7 +67,7 @@ mongoose.connect(
 });
 
 
-app.get((req,res)=>{
+app.get('/',(req,res)=>{
   res.send({
     activeStatus:true,
     error:false
