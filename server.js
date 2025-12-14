@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const Nomination = require("./models/Selection");
 require("dotenv").config();
 
 const app = express();
@@ -65,7 +66,13 @@ mongoose.connect(
   console.log("DB:", mongoose.connection.name);
 });
 
-const Nomination = require("./models/Selection");
+
+app.get((req,res)=>{
+  res.send({
+    activeStatus:true,
+    error:false
+  })
+})
 
 // Get all nominations
 app.get("/api/all", async (req, res) => {
