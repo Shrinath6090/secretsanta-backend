@@ -8,62 +8,62 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let cached = global.mongoose;
+//let cached = global.mongoose;
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+// if (!cached) {
+//   cached = global.mongoose = { conn: null, promise: null };
+// }
 
-async function connectDB() {
-  if (cached.conn) return cached.conn;
+// async function connectDB() {
+//   if (cached.conn) return cached.conn;
 
-  if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(process.env.MONGO_URI, {
-        bufferCommands: false,
-      })
-      .then((mongoose) => {
-        console.log("MongoDB connected");
-        console.log("DB:", mongoose.connection.name);
-        return mongoose;
-      });
-  }
+//   if (!cached.promise) {
+//     cached.promise = mongoose
+//       .connect(process.env.MONGO_URI, {
+//         bufferCommands: false,
+//       })
+//       .then((mongoose) => {
+//         console.log("MongoDB connected");
+//         console.log("DB:", mongoose.connection.name);
+//         return mongoose;
+//       });
+//   }
 
-  cached.conn = await cached.promise;
-  return cached.conn;
-}
+//   cached.conn = await cached.promise;
+//   return cached.conn;
+// }
 
 /* Ensure DB connection per request */
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ message: "Database connection failed" });
-  }
-});
-// let isConnected = false;
-// async function connectedMongoDB(){
+// app.use(async (req, res, next) => {
 //   try {
-//     await mongoose.connect(process.env.MONGODB_URI);
-//     isConnected = true;
-//     console.log("MongoDB connected");
-//   } catch (error) {
-//     console.error("error connecting to the mongodb");
+//     await connectDB();
+//     next();
+//   } catch (err) {
+//     res.status(500).json({ message: "Database connection failed" });
 //   }
-// }
-// app.use((req,res,next)=>{
-//   if(!isConnected){
-//     connectedMongoDB()
-//   }
-//   next();
-// })
-// mongoose.connect(
-//   process.env.MONGODB_URI
-// ).then(() => {
-//   console.log("MongoDB connected");
-//   console.log("DB:", mongoose.connection.name);
 // });
+let isConnected = false;
+async function connectedMongoDB(){
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("error connecting to the mongodb");
+  }
+}
+app.use((req,res,next)=>{
+  if(!isConnected){
+    connectedMongoDB()
+  }
+  next();
+})
+mongoose.connect(
+  process.env.MONGODB_URI
+).then(() => {
+  console.log("MongoDB connected");
+  console.log("DB:", mongoose.connection.name);
+});
 
 const Nomination = require("./models/Selection");
 
