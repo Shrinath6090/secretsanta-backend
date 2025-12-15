@@ -12,6 +12,7 @@ app.use(express.json());
    MongoDB Serverless Safe Setup
 =============================== */
 
+console.log("MONGO URI EXISTS:", process.env.MONGODB_URI);
 let cached = global.mongoose;
 
 if (!cached) {
